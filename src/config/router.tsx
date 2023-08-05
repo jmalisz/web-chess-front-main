@@ -11,10 +11,10 @@ export const routeConfig = {
     relativePath: "/",
   },
   game: {
-    absolutePath: "/game",
-    relativePath: "game",
+    absolutePath: "/game/:gameId",
+    relativePath: "game/:gameId",
   },
-};
+} as const;
 
 export const router = createBrowserRouter([
   {
