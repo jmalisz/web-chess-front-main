@@ -1,6 +1,9 @@
+import { useEffect } from "react";
 import { z } from "zod";
 
 import { useContextSocketIo } from "@/providers/SocketIo";
+
+const EVENT_NAME = "newGamePosition";
 
 const responseSchema = z.object({
   gamePositionFen: z.string(),
@@ -12,9 +15,15 @@ export const useListenNewGamePosition = (
 ) => {
   const socketIo = useContextSocketIo();
 
-  socketIo.on("newGamePosition", (data) => {
-    const parsedNewGamePosition = responseSchema.parse(data);
+  useEffect(() => {
+    socketIo.on(EVENT_NAME, (data) => {
+      const parsedNewGamePosition = responseSchema.parse(data);
 
-    handler(parsedNewGamePosition);
-  });
+      handler(parsedNewGamePosition);
+    });
+
+    return () => {
+      socketIo.removeListener(EVENT_NAME);
+    };
+  }, [handler, socketIo]);
 };

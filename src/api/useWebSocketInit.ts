@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { io, Socket } from "socket.io-client";
 import { z } from "zod";
 
@@ -10,45 +10,44 @@ const connectedDataSchema = z.object({
   sessionId: z.string(),
 });
 
-const connectSocket = (socketIo: Socket) => {
-  const savedSessionId = localStorage.getItem(SESSION_ID_LS_KEY);
-  if (savedSessionId) {
-    // eslint-disable-next-line no-param-reassign
-    socketIo.auth = { sessionId: savedSessionId };
-  }
-
-  socketIo.connect();
-  socketIo.on("connected", (data) => {
-    const { sessionId } = connectedDataSchema.parse(data);
-    // eslint-disable-next-line no-param-reassign
-    socketIo.auth = { sessionId };
-    localStorage.setItem(SESSION_ID_LS_KEY, sessionId);
-  });
-};
-
 export const useWebSocketInit = () => {
   if (!SOCKET_IO_URL) throw new Error("Missing SOCKET_IO_URL env");
 
-  const socketIo = io(SOCKET_IO_URL, { autoConnect: false });
-
-  // Provides socket logs on client
-  if (IS_DEV) {
-    socketIo.onAny((event, ...args) => {
-      // eslint-disable-next-line no-console
-      console.log(event, args);
-    });
-    // eslint-disable-next-line no-console
-    console.log("Socket created:", socketIo);
-  }
-
-  connectSocket(socketIo);
-
-  useEffect(
-    () => () => {
-      socketIo.close();
-    },
-    [socketIo],
+  const [socketIo, setSocketIo] = useState<Socket>(
+    io(SOCKET_IO_URL, {
+      auth: (cb) => cb({ sessionId: localStorage.getItem(SESSION_ID_LS_KEY) }),
+    }),
   );
+
+  // Set up listeners and session
+  useEffect(() => {
+    if (!SOCKET_IO_URL) throw new Error("Missing SOCKET_IO_URL env");
+
+    // This is in general redundant, but required to work with double effect in React strict mode
+    const newSocketIo = io(SOCKET_IO_URL, {
+      auth: (cb) => cb({ sessionId: localStorage.getItem(SESSION_ID_LS_KEY) }),
+    });
+    setSocketIo(newSocketIo);
+    // Provides socket logs on client
+    if (IS_DEV) {
+      newSocketIo.onAny((event, ...args) => {
+        // eslint-disable-next-line no-console
+        console.log(event, args);
+      });
+      // eslint-disable-next-line no-console
+      console.log("Socket created:", newSocketIo);
+    }
+
+    newSocketIo.on("connected", (data) => {
+      const { sessionId } = connectedDataSchema.parse(data);
+      newSocketIo.auth = { sessionId };
+      localStorage.setItem(SESSION_ID_LS_KEY, sessionId);
+    });
+
+    return () => {
+      newSocketIo.close();
+    };
+  }, []);
 
   return {
     socketIo,

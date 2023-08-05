@@ -1,4 +1,4 @@
-import { useCallback } from "react";
+import { useCallback, useMemo } from "react";
 
 import { useContextSocketIo } from "@/providers/SocketIo";
 
@@ -14,5 +14,5 @@ export const useEmitEnterGameRoom = () => {
     [socketIo],
   );
 
-  return { emit };
+  return useMemo(() => ({ emit }), [emit]);
 };

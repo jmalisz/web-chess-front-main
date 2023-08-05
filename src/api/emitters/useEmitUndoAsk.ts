@@ -1,4 +1,4 @@
-import { useCallback } from "react";
+import { useCallback, useMemo } from "react";
 
 import { useContextSocketIo } from "@/providers/SocketIo";
 
@@ -9,10 +9,7 @@ type EmitUndoAskArgs = {
 export const useEmitUndoAsk = () => {
   const socketIo = useContextSocketIo();
 
-  const emit = useCallback(
-    (args: EmitUndoAskArgs) => socketIo.emit("enterGameRoom", args),
-    [socketIo],
-  );
+  const emit = useCallback((args: EmitUndoAskArgs) => socketIo.emit("undoAsk", args), [socketIo]);
 
-  return { emit };
+  return useMemo(() => ({ emit }), [emit]);
 };

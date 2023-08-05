@@ -1,4 +1,4 @@
-import { useCallback } from "react";
+import { useCallback, useMemo } from "react";
 
 import { useContextSocketIo } from "@/providers/SocketIo";
 
@@ -10,9 +10,9 @@ export const useEmitSurrender = () => {
   const socketIo = useContextSocketIo();
 
   const emit = useCallback(
-    (args: EmitSurrenderArgs) => socketIo.emit("enterGameRoom", args),
+    (args: EmitSurrenderArgs) => socketIo.emit("surrender", args),
     [socketIo],
   );
 
-  return { emit };
+  return useMemo(() => ({ emit }), [emit]);
 };

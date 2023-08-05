@@ -9,6 +9,7 @@ import { useEmitSurrender } from "@/api/emitters/useEmitSurrender";
 import { useEmitUndoAnswer } from "@/api/emitters/useEmitUndoAnswer";
 import { useEmitUndoAsk } from "@/api/emitters/useEmitUndoAsk";
 import { useListenDefeat } from "@/api/listeners/useListenDefeat";
+import { useListenDraw } from "@/api/listeners/useListenDraw";
 import {
   EnterGameRoomResponse,
   useListenEnterGameRoom,
@@ -17,7 +18,10 @@ import {
   NewChatMessageResponse,
   useListenNewChatMessage,
 } from "@/api/listeners/useListenNewChatMessage";
-import { NewGamePositionResponse } from "@/api/listeners/useListenNewGamePosition";
+import {
+  NewGamePositionResponse,
+  useListenNewGamePosition,
+} from "@/api/listeners/useListenNewGamePosition";
 import { useListenUndoAsk } from "@/api/listeners/useListenUndoAsk";
 import { useListenVictory } from "@/api/listeners/useListenVictory";
 import { Chatbox } from "@/components/Chatbox";
@@ -133,7 +137,7 @@ export function GamePage() {
   const handleNewGamePosition = useCallback(({ gamePositionFen }: NewGamePositionResponse) => {
     setGame(new Chess(gamePositionFen));
   }, []);
-  useListenEnterGameRoom(handleNewGamePosition);
+  useListenNewGamePosition(handleNewGamePosition);
 
   const handleVictory = useCallback(() => {
     setDialog(<GameFinishedDialog title="You won!" onOk={() => setDialog(undefined)} />);
@@ -148,7 +152,7 @@ export function GamePage() {
   const handleDraw = useCallback(() => {
     setDialog(<GameFinishedDialog title="A draw!" onOk={() => setDialog(undefined)} />);
   }, [setDialog]);
-  useListenDefeat(handleDraw);
+  useListenDraw(handleDraw);
 
   const emitterUndoAnswer = useEmitUndoAnswer();
   const handleUndoAsk = useCallback(() => {
@@ -167,12 +171,9 @@ export function GamePage() {
   }, [emitterUndoAnswer, gameId, setDialog]);
   useListenUndoAsk(handleUndoAsk);
 
-  const handleNewChatMessage = useCallback(
-    ({ chatMessage: newChatMessages }: NewChatMessageResponse) => {
-      setChatMessages((prev) => [...prev, newChatMessages]);
-    },
-    [],
-  );
+  const handleNewChatMessage = useCallback((newChatMessage: NewChatMessageResponse) => {
+    setChatMessages((prev) => [...prev, newChatMessage]);
+  }, []);
   useListenNewChatMessage(handleNewChatMessage);
 
   const emitterEnterGameRoom = useEmitEnterGameRoom();

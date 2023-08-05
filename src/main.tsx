@@ -6,6 +6,6 @@ import { router } from "@/config/router";
 
 createRoot(document.querySelector("#root")!).render(
   <StrictMode>
-    <RouterProvider router={router} />
+    <RouterProvider router={router} />,
   </StrictMode>,
 );
