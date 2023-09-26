@@ -37,9 +37,14 @@ function OpponentMissingDialog() {
   const [buttonText, setButtonText] = useState(DEFAULT_BUTTON_TEXT);
 
   const copyLink = useCallback(async () => {
-    await navigator.clipboard.writeText(window.location.href);
-    setButtonText("Copied!");
-    setTimeout(() => setButtonText(DEFAULT_BUTTON_TEXT), 1000);
+    try {
+      await navigator.clipboard.writeText(window.location.href);
+      setButtonText("Copied!");
+      setTimeout(() => setButtonText(DEFAULT_BUTTON_TEXT), 1000);
+    } catch {
+      setButtonText("Unable to copy...");
+      setTimeout(() => setButtonText(DEFAULT_BUTTON_TEXT), 1000);
+    }
   }, []);
 
   return (

@@ -41,7 +41,7 @@ export function MainLayout() {
   useListenDisconnect(handleDisconnect);
 
   return (
-    <div className="flex h-screen flex-col items-center">
+    <div className="flex grow flex-col items-center">
       <header className="sticky top-0 z-10 hidden w-full border-b border-b-gray-200 bg-base-100 md:block">
         <div className="m-auto max-w-5xl p-4">
           <Link to="/">
@@ -51,7 +51,7 @@ export function MainLayout() {
           </Link>
         </div>
       </header>
-      <div className="w-full max-w-5xl flex-grow justify-center p-4">
+      <div className="flex w-full max-w-5xl flex-grow flex-col p-4">
         <Outlet />
       </div>
       <footer className="flex max-w-5xl flex-col justify-center p-4 ">

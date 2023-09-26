@@ -13,18 +13,20 @@ const connectedDataSchema = z.object({
 export const useWebSocketInit = () => {
   if (!SOCKET_IO_URL) throw new Error("Missing SOCKET_IO_URL env");
 
+  const { origin, pathname } = new URL(SOCKET_IO_URL);
+
   const [socketIo, setSocketIo] = useState<Socket>(
-    io(SOCKET_IO_URL, {
+    io(origin, {
+      path: `${pathname}/socket.io`,
       auth: (cb) => cb({ sessionId: localStorage.getItem(SESSION_ID_LS_KEY) }),
     }),
   );
 
   // Set up listeners and session
   useEffect(() => {
-    if (!SOCKET_IO_URL) throw new Error("Missing SOCKET_IO_URL env");
-
     // This is in general redundant, but required to work with double effect in React strict mode
-    const newSocketIo = io(SOCKET_IO_URL, {
+    const newSocketIo = io(origin, {
+      path: `${pathname}/socket.io`,
       auth: (cb) => cb({ sessionId: localStorage.getItem(SESSION_ID_LS_KEY) }),
     });
     setSocketIo(newSocketIo);
@@ -47,7 +49,7 @@ export const useWebSocketInit = () => {
     return () => {
       newSocketIo.close();
     };
-  }, []);
+  }, [origin, pathname]);
 
   return {
     socketIo,

@@ -1,0 +1,6 @@
+version: "3.8"
+services:
+  web-chess-front-main:
+    image: "jmalisz/web-chess-front-main"
+    ports:
+      - "3000:3000"

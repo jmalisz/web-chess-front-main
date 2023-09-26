@@ -1,0 +1,37 @@
+# Use Node.js from .nvmrc
+ARG NODE_VERSION
+
+# Prepare and cache pnpm
+FROM node:${NODE_VERSION} AS base
+WORKDIR /app
+ENV PNPM_HOME="/pnpm"
+ENV PATH="$PNPM_HOME:$PATH"
+RUN corepack enable
+COPY package.json .
+COPY pnpm-lock.yaml .
+COPY . .
+
+# Prepare and cache dependencies
+FROM base AS dependencies
+WORKDIR /app
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --prod --ignore-scripts --frozen-lockfile
+
+# Prepare and cache build
+FROM base AS build
+ARG VITE_SOCKET_IO_URL="http://web-chess.com/api/websocket"
+WORKDIR /app
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --ignore-scripts --frozen-lockfile
+RUN pnpm run build
+
+# Prepare and cache working app
+FROM base AS app
+WORKDIR /app
+COPY --from=dependencies /app/node_modules ./node_modules
+COPY --from=build /app/dist ./dist
+
+# Setup nginx
+FROM nginx:stable AS final
+COPY docker/nginx.conf /etc/nginx/conf.d/default.conf
+COPY --from=app /app/dist /usr/share/nginx/html
+
+CMD ["nginx", "-g", "daemon off;"]
