@@ -18,7 +18,9 @@ export const useWebSocketInit = () => {
   const [socketIo, setSocketIo] = useState<Socket>(
     io(origin, {
       path: `${pathname}/socket.io`,
+      transports: ["websocket"],
       auth: (cb) => cb({ sessionId: localStorage.getItem(SESSION_ID_LS_KEY) }),
+      autoConnect: false,
     }),
   );
 
@@ -27,6 +29,7 @@ export const useWebSocketInit = () => {
     // This is in general redundant, but required to work with double effect in React strict mode
     const newSocketIo = io(origin, {
       path: `${pathname}/socket.io`,
+      transports: ["websocket"],
       auth: (cb) => cb({ sessionId: localStorage.getItem(SESSION_ID_LS_KEY) }),
     });
     setSocketIo(newSocketIo);
