@@ -1,15 +1,17 @@
-import { RouterProvider } from "react-router-dom";
+import "react-toastify/dist/ReactToastify.min.css";
+
+import { Outlet } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
 
 import { ContextProviderDialog } from "@/providers/Dialog";
 import { ContextProviderSocketIo } from "@/providers/SocketIo";
 
-import { router } from "./config/router";
-
-export function App() {
+export function AppContextProviders() {
   return (
     <ContextProviderSocketIo>
       <ContextProviderDialog>
-        <RouterProvider router={router} />
+        <ToastContainer position="bottom-center" />
+        <Outlet />
       </ContextProviderDialog>
     </ContextProviderSocketIo>
   );
