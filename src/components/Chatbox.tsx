@@ -26,6 +26,14 @@ export function Chatbox({ chatMessages, onNewChatMessage }: ChatboxProps) {
     chatInputRef.current.textContent = "";
   }, [onNewChatMessage]);
 
+  const chatKeyDownHandler = useCallback((event: KeyboardEvent<HTMLDivElement>) => {
+    const { key, shiftKey } = event;
+
+    if (key === "Enter" && !shiftKey) {
+      event.preventDefault();
+    }
+  }, []);
+
   const chatKeyUpHandler = useCallback(
     (event: KeyboardEvent<HTMLDivElement>) => {
       const { key, shiftKey } = event;
@@ -38,7 +46,6 @@ export function Chatbox({ chatMessages, onNewChatMessage }: ChatboxProps) {
     },
     [triggerSend],
   );
-
   const debouncedChatKeyUpHandler = useMemo(
     () => debounce(chatKeyUpHandler, 100),
     [chatKeyUpHandler],
@@ -71,6 +78,7 @@ export function Chatbox({ chatMessages, onNewChatMessage }: ChatboxProps) {
           spellCheck="true"
           tabIndex={0}
           contentEditable
+          onKeyDown={chatKeyDownHandler}
           onKeyUp={debouncedChatKeyUpHandler}
         />
         <button className="btn btn-ghost btn-sm" type="button" onClick={triggerSend}>
