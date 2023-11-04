@@ -37,11 +37,16 @@ jobs:
         shell: bash
         run: echo "NODE_VERSION=$(bin/read_node_version.sh)" >> $GITHUB_OUTPUT
 
+      - name: Generate image tag
+        id: tag-generator
+        shell: bash
+        run: echo "TAG=$(bin/generate_docker_tag.sh)" >> $GITHUB_OUTPUT
+
       - name: Build and push image to Docker Hub
         uses: docker/build-push-action@v5
         with:
           push: true
-          tags: $(bin/generate_docker_tag.sh):latest, $(bin/generate_docker_tag.sh):${{ github.sha }}
+          tags: ${{ steps.tag-generator.outputs.TAG }}:latest, ${{ steps.tag-generator.outputs.TAG }}:${{ github.sha }}
           build-args: |
             "NODE_VERSION=${{ steps.node-version-reader.outputs.NODE_VERSION }}"
 
