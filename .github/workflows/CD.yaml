@@ -1,5 +1,9 @@
 name: CD build & deploy
 
+permissions:
+  # This is required for requesting the OIDC JWT
+  id-token: write
+
 on:
   push:
     branches: [master]
@@ -8,10 +12,6 @@ jobs:
   ci:
     name: Test & build
     runs-on: ubuntu-latest
-    permissions:
-      # This is required for requesting the OIDC JWT
-      contents: read
-      id-token: write
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
