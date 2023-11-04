@@ -28,6 +28,10 @@ runs:
         restore-keys: |
           ${{ runner.os }}-pnpm-store-
 
+    - name: Install node_modules
+      shell: bash
+      run: pnpm install
+
     - name: Run prettify
       shell: bash
       run: pnpm run prettify
