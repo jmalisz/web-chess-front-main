@@ -36,12 +36,12 @@ jobs:
       - name: Read Node.js version from .nvmrc
         id: node-version-reader
         shell: bash
-        run: echo "NODE_VERSION=$(./bin/read_node_version.sh)" >> $GITHUB_OUTPUT
+        run: echo "NODE_VERSION=$(bin/read_node_version.sh)" >> $GITHUB_OUTPUT
 
       - name: Build and push image to Docker Hub
         uses: docker/build-push-action@v5
         with:
           push: true
-          tags: "$(./bin/read_node_version.sh):latest, $(./bin/read_node_version.sh):${{ github.sha }}"
+          tags: "$(bin/generate_docker_tag.sh):latest, $(./bin/generate_docker_tag.sh):${{ github.sha }}"
           build-args: |
             "NODE_VERSION=${{ steps.node-version-reader.outputs.NODE_VERSION }}"
