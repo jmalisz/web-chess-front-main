@@ -55,7 +55,6 @@ jobs:
         uses: "google-github-actions/get-gke-credentials@v1"
         with:
           cluster_name: ${{ secrets.GCP_GKE_CLUSTER_NAME }}
-          location: eu-central2
 
       - name: Deploy the code
         run: kubectl rollout restart deployment front-main-deployment
