@@ -41,7 +41,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           push: true
-          tags: "$(bin/generate_docker_tag.sh):latest, $(bin/generate_docker_tag.sh):${{ github.sha }}"
+          tags: $(bin/generate_docker_tag.sh):latest, $(bin/generate_docker_tag.sh):${{ github.sha }}
           build-args: |
             "NODE_VERSION=${{ steps.node-version-reader.outputs.NODE_VERSION }}"
 
