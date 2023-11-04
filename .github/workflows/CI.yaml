@@ -10,6 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       # This is required for requesting the OIDC JWT
+      contents: read
       id-token: write
     steps:
       - name: Checkout code
