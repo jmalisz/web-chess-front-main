@@ -10,13 +10,17 @@
     "dev": "concurrently \"npm:dev:*\"",
     "dev:css": "tailwindcss -w -i src/styles/tailwind.css -o src/styles/app.css",
     "dev:vite": "vite",
-    "preview": "vite preview",
     "docker:image": "docker build -t $(bin/generate_docker_tag.sh) --build-arg NODE_VERSION=$(bin/read_node_version.sh) .",
+    "docker:run": "docker run -p 3000:3000 -d --restart=always $(bin/generate_docker_tag.sh)",
     "lint": "eslint src --report-unused-disable-directives --max-warnings 0",
     "lint:fix": "eslint src --report-unused-disable-directives --max-warnings 0 --fix",
+    "prepare": "pnpm run \"/^prepareScripts:.*/\"",
+    "prepareScripts:executables": "chmod +x .githooks/* bin/*",
+    "prepareScripts:hooks": "git config core.hooksPath .githooks",
     "prettify": "prettier src --check",
     "prettify:fix": "prettier src --write",
-    "typecheck": "tsc -b"
+    "start": "vite preview",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "chess.js": "1.0.0-beta.6",
@@ -56,6 +60,7 @@
     "eslint-plugin-react-refresh": "^0.4.3",
     "eslint-plugin-simple-import-sort": "^10.0.0",
     "eslint-plugin-unicorn": "^48.0.1",
+    "lint-staged": "^13.2.3",
     "postcss": "^8.4.27",
     "prettier-plugin-tailwindcss": "^0.4.1",
     "tailwindcss": "^3.3.3",
