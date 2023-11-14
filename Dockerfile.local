@@ -14,24 +14,13 @@ COPY . .
 # Prepare and cache dependencies
 FROM base AS dependencies
 WORKDIR /app
-RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --prod --ignore-scripts --frozen-lockfile
-
-# Prepare and cache build
-FROM base AS build
-ARG VITE_SOCKET_IO_URL="https://www.web-chess.xyz/api/websocket"
-WORKDIR /app
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --ignore-scripts --frozen-lockfile
-RUN pnpm run build
 
 # Prepare and cache working app
 FROM base AS app
 WORKDIR /app
 COPY --from=dependencies /app/node_modules ./node_modules
-COPY --from=build /app/dist ./dist
 
-# Setup nginx
-FROM nginx:stable AS final
-COPY docker/nginx.conf /etc/nginx/conf.d/default.conf
-COPY --from=app /app/dist /usr/share/nginx/html
+ENV VITE_SOCKET_IO_URL="https://web-chess.com/api/websocket"
 
-CMD ["nginx", "-g", "daemon off;"]
+CMD ["pnpm", "dev"]

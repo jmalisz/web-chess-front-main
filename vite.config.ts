@@ -11,7 +11,11 @@ export default defineConfig({
   root: "src",
   publicDir: "../public",
   server: {
+    host: true,
     port: 3000,
+    watch: {
+      usePolling: true,
+    },
   },
   build: {
     outDir: "../dist",

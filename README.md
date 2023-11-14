@@ -7,13 +7,11 @@ Main points:
 - Set up with recommended `VSCode` extensions, `EditorConfig`, `Eslint` and `Prettier` for better developer experience.
 - Uses `Vite` bundler with `React`.
 - Uses strict `TypeScript` and `Zod` to ensure good type safety.
-- Uses `TailwindCSS` for styling.
+- Uses `TailwindCSS` for styling and `daisyUI` for components.
 
 See `package.json` for specific packages. Check `.nvmrc` for NodeJS version.
 
-It's recommended to use `pnpm` package manager - <https://pnpm.io/>.
-
-It can also be used instead of `nvm` to manage `NodeJS`. It's much faster than `npm`.
+It's recommended to use `pnpm` package manager - <https://pnpm.io/>. It's much faster than `npm`. It can also be used instead of `nvm` to manage `NodeJS`.
 
 It is assumed that `pnpm` is used going forward.
 
@@ -27,7 +25,7 @@ Start development server:
 pnpm run dev
 ```
 
-See `package.json` for full list of commands.
+You can also use `Dockerfile.local`. See `package.json` for full list of commands.
 
 ## Production
 
