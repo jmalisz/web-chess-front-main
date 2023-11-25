@@ -1,7 +1,9 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
 import { MainLayout } from "@/layouts/MainLayout";
-import { GamePage } from "@/pages/GamePage";
+import { AgentChoicePage } from "@/pages/AgentChoicePage";
+import { AgentGamePage } from "@/pages/AgentGamePage";
+import { PersonGamePage } from "@/pages/GamePage";
 import { HomePage } from "@/pages/HomePage";
 import { AppContextProviders } from "@/routes/AppContextProviders";
 import { appRouteConfig } from "@/routes/appRouteConfig";
@@ -18,12 +20,20 @@ const router = createBrowserRouter([
             element: <MainLayout />,
             children: [
               {
-                path: appRouteConfig.home.relativePath,
+                path: appRouteConfig.home,
                 element: <HomePage />,
               },
               {
-                path: appRouteConfig.game.relativePath,
-                element: <GamePage />,
+                path: appRouteConfig.personGame,
+                element: <PersonGamePage />,
+              },
+              {
+                path: appRouteConfig.agentChoice,
+                element: <AgentChoicePage />,
+              },
+              {
+                path: appRouteConfig.agentGame,
+                element: <AgentGamePage />,
               },
             ],
           },

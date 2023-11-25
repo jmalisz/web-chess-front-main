@@ -1,18 +1,29 @@
 import type { Chess, Square } from "chess.js";
-import { useCallback, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { Chessboard } from "react-chessboard";
+import { useNavigate } from "react-router-dom";
 
 type PossibleMovesType = Record<string, { background?: string; borderRadius?: string }>;
 
 type GameChessboardProps = {
   game: Chess;
   side: "white" | "black";
+  checkUndoSide?: boolean;
+  showGoBack?: boolean;
   onMove: (from: string, to: string) => void;
   onSurrender: () => void;
   onUndo: () => void;
 };
 
-export function GameChessboard({ game, side, onMove, onSurrender, onUndo }: GameChessboardProps) {
+export function GameChessboard({
+  game,
+  side,
+  checkUndoSide = true,
+  showGoBack,
+  onMove,
+  onSurrender,
+  onUndo,
+}: GameChessboardProps) {
   const [moveFrom, setMoveFrom] = useState("");
   const [possibleMoves, setPossibleMoves] = useState<PossibleMovesType>();
 
@@ -82,16 +93,18 @@ export function GameChessboard({ game, side, onMove, onSurrender, onUndo }: Game
     [moveFrom, game, side, possibleMoves, onMove, deselectPiece],
   );
 
-  const getGameHeader = useCallback(() => {
+  const getGameHeader = useMemo(() => {
     if (game.isCheck()) return game.turn() === "w" ? "White in check!" : "Black in check!";
 
-    return "Game is in session...";
+    return game.turn() === "w" ? "Your turn" : "Opponent turn";
   }, [game]);
+
+  const navigate = useNavigate();
 
   // A lot of things are rerendered when new game prop will arrive
   return (
     <div className="flex grow flex-col gap-4">
-      <div className="text-center">{getGameHeader()}</div>
+      <div className="text-center">{getGameHeader}</div>
       <div className="m-auto my-0 w-[70%] max-w-[70vh] md:w-full">
         <Chessboard
           arePiecesDraggable={false}
@@ -118,7 +131,7 @@ export function GameChessboard({ game, side, onMove, onSurrender, onUndo }: Game
           </button>
           <button
             className="btn btn-outline"
-            disabled={game.turn() === side[0] || game.pgn().length === 0}
+            disabled={(checkUndoSide && game.turn() === side[0]) || game.pgn().length === 0}
             type="button"
             onClick={() => {
               deselectPiece();
@@ -127,6 +140,15 @@ export function GameChessboard({ game, side, onMove, onSurrender, onUndo }: Game
           >
             Undo
           </button>
+          {showGoBack ? (
+            <button
+              className="btn btn-secondary ml-auto"
+              type="button"
+              onClick={() => navigate(-1)}
+            >
+              Go back
+            </button>
+          ) : null}
         </div>
       </div>
     </div>

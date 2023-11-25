@@ -26,6 +26,7 @@ import { useListenUndoAsk } from "@/api/listeners/useListenUndoAsk";
 import { useListenVictory } from "@/api/listeners/useListenVictory";
 import { Chatbox } from "@/components/Chatbox";
 import { GameChessboard } from "@/components/Chessboard";
+import { GameFinishedDialog } from "@/components/GameFinishedDialog";
 import { Spinner } from "@/components/Spinner";
 import { ChatMessageType } from "@/models/ChatMessage";
 import { GameDataType } from "@/models/GameData";
@@ -64,26 +65,6 @@ function OpponentMissingDialog() {
   );
 }
 
-type GameFinishedDialogProps = {
-  title: string;
-  onOk: () => void;
-};
-
-function GameFinishedDialog({ title, onOk }: GameFinishedDialogProps) {
-  return (
-    <div className="modal visible">
-      <div className="modal-box max-w-xs">
-        <h3 className="text-center text-lg font-bold">{title}</h3>
-        <div className="modal-action justify-evenly">
-          <button className="btn btn-primary" type="button" onClick={onOk}>
-            Ok
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-}
-
 type UndoAskDialogProps = {
   onNo: () => void;
   onYes: () => void;
@@ -108,7 +89,7 @@ function UndoAskDialog({ onNo, onYes }: UndoAskDialogProps) {
   );
 }
 
-export function GamePage() {
+export function PersonGamePage() {
   const { gameId } = useParams();
   if (!gameId) throw new Error("This shouldn't be matched by router");
 
@@ -183,7 +164,7 @@ export function GamePage() {
 
   const emitterEnterGameRoom = useEmitEnterGameRoom();
   useEffect(() => {
-    emitterEnterGameRoom.emit({ gameId });
+    emitterEnterGameRoom.emit({ gameId, gameType: "human" });
   }, [emitterEnterGameRoom, gameId]);
 
   const emitterNewGamePosition = useEmitNewGamePosition();
@@ -198,13 +179,16 @@ export function GamePage() {
 
   return (
     <div className="flex flex-col gap-4 md:flex-row">
-      <GameChessboard
-        game={game}
-        side={side}
-        onMove={(from, to) => emitterNewGamePosition.emit({ gameId, from, to })}
-        onSurrender={() => emitterSurrender.emit({ gameId })}
-        onUndo={() => emitterUndoAsk.emit({ gameId })}
-      />
+      <div className="flex grow flex-col gap-4 text-center">
+        Playing against human opponent...
+        <GameChessboard
+          game={game}
+          side={side}
+          onMove={(from, to) => emitterNewGamePosition.emit({ gameId, from, to })}
+          onSurrender={() => emitterSurrender.emit({ gameId })}
+          onUndo={() => emitterUndoAsk.emit({ gameId })}
+        />
+      </div>
       <Chatbox
         chatMessages={chatMessages}
         onNewChatMessage={(newChatMessage) =>

@@ -1,10 +1,6 @@
 export const appRouteConfig = {
-  home: {
-    absolutePath: "/",
-    relativePath: "/",
-  },
-  game: {
-    absolutePath: "/game/:gameId",
-    relativePath: "game/:gameId",
-  },
+  home: "/",
+  personGame: "/game/person/:gameId",
+  agentChoice: "/game/agent/choose",
+  agentGame: "/game/agent/:agentName/:gameId",
 } as const;

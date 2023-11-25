@@ -4,6 +4,7 @@ import { useContextSocketIo } from "@/providers/SocketIo";
 
 type EmitEnterGameRoomArgs = {
   gameId: string;
+  gameType: "human" | "stockfish" | "hybrid" | "neural-network";
 };
 
 export const useEmitEnterGameRoom = () => {
