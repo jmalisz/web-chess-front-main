@@ -21,11 +21,12 @@ import { useListenVictory } from "@/api/listeners/useListenVictory";
 import { GameChessboard } from "@/components/Chessboard";
 import { GameFinishedDialog } from "@/components/GameFinishedDialog";
 import { Spinner } from "@/components/Spinner";
+import { AGENT_TYPES } from "@/constants";
 import { GameDataType } from "@/models/GameData";
 import { useContextDialog } from "@/providers/Dialog";
 
 const paramsSchema = z.object({
-  agentName: z.enum(["stockfish", "hybrid", "neural-network"]),
+  agentName: z.enum(["stockfishEngineStrength", "stockfishEvaluation", "neuralNetwork"]),
   gameId: z.string(),
 });
 
@@ -81,7 +82,7 @@ export function AgentGamePage() {
 
   return (
     <div className="flex grow flex-col gap-4 text-center">
-      Playing against {agentName} agent...
+      Playing against {AGENT_TYPES[agentName].agentName} agent...
       <GameChessboard
         checkUndoSide={false}
         game={game}
