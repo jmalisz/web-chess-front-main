@@ -184,7 +184,7 @@ export function PersonGamePage() {
         <GameChessboard
           game={game}
           side={side}
-          onMove={(from, to) => emitterNewGamePosition.emit({ gameId, from, to })}
+          onMove={(from, to) => emitterNewGamePosition.emit({ gameId, elo: 1200, from, to })}
           onSurrender={() => emitterSurrender.emit({ gameId })}
           onUndo={() => emitterUndoAsk.emit({ gameId })}
         />

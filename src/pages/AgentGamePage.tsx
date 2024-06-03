@@ -1,5 +1,5 @@
 import { Chess } from "chess.js";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import { z } from "zod";
 
@@ -19,6 +19,7 @@ import {
 } from "@/api/listeners/useListenNewGamePosition";
 import { useListenVictory } from "@/api/listeners/useListenVictory";
 import { GameChessboard } from "@/components/Chessboard";
+import { EloSelect } from "@/components/EloSelect";
 import { GameFinishedDialog } from "@/components/GameFinishedDialog";
 import { Spinner } from "@/components/Spinner";
 import { AGENT_TYPES } from "@/constants";
@@ -32,6 +33,8 @@ const paramsSchema = z.object({
 
 export function AgentGamePage() {
   const { agentName, gameId } = paramsSchema.parse(useParams());
+
+  const selectRef = useRef<HTMLSelectElement | null>(null);
 
   const { setDialog } = useContextDialog();
 
@@ -81,17 +84,27 @@ export function AgentGamePage() {
   if (!game || !side) return <Spinner />;
 
   return (
-    <div className="flex grow flex-col gap-4 text-center">
-      Playing against {AGENT_TYPES[agentName].agentName} agent...
-      <GameChessboard
-        checkUndoSide={false}
-        game={game}
-        side={side}
-        showGoBack
-        onMove={(from, to) => emitterNewGamePosition.emit({ gameId, from, to })}
-        onSurrender={() => emitterSurrender.emit({ gameId })}
-        onUndo={() => emitterUndoAsk.emit({ gameId })}
-      />
+    <div className="flex flex-col gap-4 md:flex-row">
+      <div className="flex grow flex-col gap-4 text-center">
+        Playing against {AGENT_TYPES[agentName].agentName} agent...
+        <GameChessboard
+          checkUndoSide={false}
+          game={game}
+          side={side}
+          showGoBack
+          onSurrender={() => emitterSurrender.emit({ gameId })}
+          onUndo={() => emitterUndoAsk.emit({ gameId })}
+          onMove={(from, to) =>
+            emitterNewGamePosition.emit({
+              gameId,
+              elo: selectRef.current?.value ? Number(selectRef.current?.value) : 1200,
+              from,
+              to,
+            })
+          }
+        />
+      </div>
+      <EloSelect ref={selectRef} />
     </div>
   );
 }
