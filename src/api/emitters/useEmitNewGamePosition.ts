@@ -4,6 +4,7 @@ import { useContextSocketIo } from "@/providers/SocketIo";
 
 type EmitNewGamePositionArgs = {
   gameId: string;
+  elo: number;
   from: string;
   to: string;
 };
