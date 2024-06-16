@@ -19,8 +19,8 @@ RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --prod --ignore-s
 # Prepare and cache build
 FROM base AS build
 WORKDIR /app
-ARG VITE_SOCKET_IO_URL="https://www.web-chess.xyz/api/websocket"
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --ignore-scripts --frozen-lockfile
+ARG VITE_SOCKET_IO_URL="https://www.web-chess.xyz/api/websocket"
 RUN pnpm run build
 
 # Prepare and cache working app
