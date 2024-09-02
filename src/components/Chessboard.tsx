@@ -96,8 +96,8 @@ export function GameChessboard({
   const getGameHeader = useMemo(() => {
     if (game.isCheck()) return game.turn() === "w" ? "White in check!" : "Black in check!";
 
-    return game.turn() === "w" ? "Your turn" : "Opponent turn";
-  }, [game]);
+    return game.turn() === side[0] ? "Your turn" : "Opponent turn";
+  }, [game, side]);
 
   const navigate = useNavigate();
 

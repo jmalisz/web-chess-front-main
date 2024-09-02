@@ -1,6 +1,6 @@
 import React from "react";
 
-const ELO_OPTIONS = Array.from({ length: 10 }).map((_, index) => 800 + 200 * index);
+const ELO_OPTIONS = Array.from({ length: 11 }).map((_, index) => 800 + 200 * index);
 
 export function EloSelectWithRef(_: unknown, ref: React.Ref<HTMLSelectElement>) {
   return (
